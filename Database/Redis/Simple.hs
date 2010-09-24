@@ -25,7 +25,6 @@ import Control.Applicative ((<$>))
 import Data.Maybe (catMaybes)
 import Data.Monoid (Monoid)
 import Data.ByteString (ByteString)
-import qualified Data.ByteString as SB
 import GHC.Exts (IsString)
 import Data.Binary (Binary, encode, decode)
 
