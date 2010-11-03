@@ -19,6 +19,9 @@ module Database.Redis.Simple
     , setRemove
     , setContains
     , setFindAll
+
+      -- * Working with lists
+    , listRightPush
     ) where
 
 import Control.Applicative ((<$>))
@@ -125,3 +128,14 @@ setFindAll redis (Key s) = do
                 RBulk i -> decode <$> i
                 _       -> Nothing
         _ -> return []
+
+-- | Right push an item to a redis list
+--
+listRightPush :: Binary a
+              => Redis     -- ^ Redis handle
+              -> Key       -- ^ Key of the list
+              -> a         -- ^ Item to push to the list
+              -> IO ()     -- ^ No result
+listRightPush redis (Key s) m = do
+    _ <- rpush redis s $ encode m
+    return ()
