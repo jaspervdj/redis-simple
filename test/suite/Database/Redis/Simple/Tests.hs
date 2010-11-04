@@ -20,9 +20,11 @@ import           Database.Redis.Simple
 
 ------------------------------------------------------------------------------
 tests :: [Test]
-tests = [ testCase "redis-simple set-ok"      setOkTest
-        , testCase "redis-simple get"         getTest
-        , testCase "redis-simple itemExists"  itemExistsTest
+tests = [ testCase "redis-simple set-ok"        setOkTest
+        , testCase "redis-simple get"           getTest
+        , testCase "redis-simple itemExists"    itemExistsTest
+--        , testCase "redis-simple itemDelete"    deleteTest
+--        , testCase "redis-simple itemIsNoMore"  itemIsNoMoreTest
         ]
 
 testing :: String
@@ -60,3 +62,23 @@ itemExistsTest = do
     disconnect con
     H.assertEqual "Item set should exist" True returning
 
+{-
+------------------------------------------------------------------------------
+deleteTest :: H.Assertion
+deleteTest = do
+    con <- connect "127.0.0.1" defaultPort 
+    _ <- select con 0
+    returning <- itemDelete con testKey
+    disconnect con
+    H.assertEqual "Deletion" () returning
+
+
+------------------------------------------------------------------------------
+itemIsNoMoreTest :: H.Assertion
+itemIsNoMoreTest = do
+    con <- connect "127.0.0.1" defaultPort 
+    _ <- select con 0
+    returning <- itemExists con testKey
+    disconnect con
+    H.assertEqual "Item set should no longer exist" False returning
+-}
