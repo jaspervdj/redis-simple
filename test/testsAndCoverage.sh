@@ -24,7 +24,7 @@ rm -Rf $DIR
 mkdir -p $DIR
 
 EXCLUDES='Main
-  Database.Redis.Tests'
+  Database.Redis.Simple.Tests'
 
 EXCL=""
 
