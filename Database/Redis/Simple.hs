@@ -22,6 +22,7 @@ module Database.Redis.Simple
 
       -- * Working with lists
     , listRightPush
+    , listIndex
     ) where
 
 import Control.Applicative ((<$>))
@@ -139,3 +140,15 @@ listRightPush :: Binary a
 listRightPush redis (Key s) m = do
     _ <- rpush redis s $ encode m
     return ()
+
+
+listIndex :: Binary a
+          => Redis         -- ^ Redis handle
+          -> Key           -- ^ Key of the list
+          -> Int           -- ^ Index
+          -> IO (Maybe a)  -- ^ Resulting value
+listIndex redis key idx = do
+    reply <- lindex redis (unKey key) idx
+    return $ case reply of RBulk (Just r) -> Just $ decode r
+                           _              -> Nothing
+
