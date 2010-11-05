@@ -3,3 +3,4 @@ dist
 *.hi
 *.sw?
 .hpc
+*.tix

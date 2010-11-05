@@ -20,12 +20,21 @@ import           Database.Redis.Simple
 
 ------------------------------------------------------------------------------
 tests :: [Test]
-tests = [ testCase "redis-simple set-ok"        setOkTest
-        , testCase "redis-simple get"           getTest
+tests = [ testCase "redis-simple itemSet"       itemSetTest
+        , testCase "redis-simple itemGet"       itemGetTest
         , testCase "redis-simple itemExists"    itemExistsTest
+        , testCase "redis-simple setAdd"        setAddTest
+--        , testCase "redis-simple listRightPush" listRightPushTest
 --        , testCase "redis-simple itemDelete"    deleteTest
 --        , testCase "redis-simple itemIsNoMore"  itemIsNoMoreTest
         ]
+
+
+------------------------------------------------------------------------------
+-- N.B. These tests are simple checks for basically successful behaviour,
+--      but cannot be comprehensive, since that would require testing the 
+--      underlying library. Grano salis.
+
 
 testing :: String
 testing = "ἐστίν"
@@ -34,19 +43,21 @@ testing = "ἐστίν"
 testKey :: Key
 testKey = Key $ U.fromString "single"
 
+
 ------------------------------------------------------------------------------
-setOkTest :: H.Assertion
-setOkTest = do
-    con <- connect "127.0.0.1" defaultPort 
+itemSetTest :: H.Assertion
+itemSetTest = do
+    con <- connect "127.0.0.1" defaultPort
     _ <- select con 0
     returning <- itemSet con testKey testing
     disconnect con
     H.assertEqual "Set" () returning
 
+
 ------------------------------------------------------------------------------
-getTest :: H.Assertion
-getTest = do
-    con <- connect "127.0.0.1" defaultPort 
+itemGetTest :: H.Assertion
+itemGetTest = do
+    con <- connect "127.0.0.1" defaultPort
     _ <- select con 0
     Just returning <- itemGet con testKey
     disconnect con
@@ -56,7 +67,7 @@ getTest = do
 ------------------------------------------------------------------------------
 itemExistsTest :: H.Assertion
 itemExistsTest = do
-    con <- connect "127.0.0.1" defaultPort 
+    con <- connect "127.0.0.1" defaultPort
     _ <- select con 0
     returning <- itemExists con testKey
     disconnect con
@@ -66,7 +77,7 @@ itemExistsTest = do
 ------------------------------------------------------------------------------
 deleteTest :: H.Assertion
 deleteTest = do
-    con <- connect "127.0.0.1" defaultPort 
+    con <- connect "127.0.0.1" defaultPort
     _ <- select con 0
     returning <- itemDelete con testKey
     disconnect con
@@ -76,9 +87,32 @@ deleteTest = do
 ------------------------------------------------------------------------------
 itemIsNoMoreTest :: H.Assertion
 itemIsNoMoreTest = do
-    con <- connect "127.0.0.1" defaultPort 
+    con <- connect "127.0.0.1" defaultPort
     _ <- select con 0
     returning <- itemExists con testKey
     disconnect con
     H.assertEqual "Item set should no longer exist" False returning
+
+
+------------------------------------------------------------------------------
+listRightPushTest :: H.Assertion
+listRightPushTest = do
+    con <- connect "127.0.0.1" defaultPort
+    _ <- select con 0
+    _ <- listRightPush con testKey testing
+    returning <- listIndex con testKey 0
+    disconnect con
+    H.assertEqual "listRightPush (RPUSH)" testing (fromJust returning)
+
 -}
+
+------------------------------------------------------------------------------
+setAddTest :: H.Assertion
+setAddTest = do
+    con <- connect "127.0.0.1" defaultPort
+    _ <- select con 0
+    returning <- setAdd con testKey testing
+    disconnect con
+    H.assertEqual "setAdd (SADD)" () returning
+
+
