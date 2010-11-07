@@ -45,8 +45,8 @@ itemGet :: Binary a
         => Redis         -- ^ Redis handle
         -> Key           -- ^ Key of the value to get
         -> IO (Maybe a)  -- ^ Resulting value
-itemGet redis key = do
-    reply <- get redis $ unKey key
+itemGet redis (Key key) = do
+    reply <- get redis key
     return $ case reply of RBulk (Just r) -> Just $ decode r
                            _              -> Nothing
 
@@ -147,8 +147,8 @@ listIndex :: Binary a
           -> Key           -- ^ Key of the list
           -> Int           -- ^ Index
           -> IO (Maybe a)  -- ^ Resulting value
-listIndex redis key idx = do
-    reply <- lindex redis (unKey key) idx
+listIndex redis (Key key) idx = do
+    reply <- lindex redis key idx
     return $ case reply of RBulk (Just r) -> Just $ decode r
                            _              -> Nothing
 
