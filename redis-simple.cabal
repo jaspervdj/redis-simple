@@ -14,7 +14,7 @@ Maintainer:          jaspervdj@gmail.com
 Stability:           Experimental
 Category:            Database
 Build-type:          Simple
-Cabal-version:       >=1.2
+Cabal-version:       >=1.8
 Library
   Ghc-Options:       -Wall
 

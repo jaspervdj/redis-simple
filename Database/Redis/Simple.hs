@@ -3,10 +3,11 @@
 --
 -- It only supports a small subset of the redis features.
 --
-{-# LANGUAGE OverloadedStrings, GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings          #-}
 module Database.Redis.Simple
     ( -- * Type for keys
-      Key (..) 
+      Key (..)
 
       -- * Working with simple key-value pairs
     , itemGet
@@ -25,19 +26,19 @@ module Database.Redis.Simple
     , listIndex
     ) where
 
-import Control.Applicative ((<$>))
-import Data.Maybe (catMaybes)
-import Data.Monoid (Monoid)
-import Data.ByteString (ByteString)
-import GHC.Exts (IsString)
-import Data.Binary (Binary, encode, decode)
+import           Control.Applicative  ((<$>))
+import           Data.Binary          (Binary, decode, encode)
+import           Data.ByteString      (ByteString)
+import           Data.Maybe           (catMaybes)
+import           Data.Monoid          (Monoid)
+import           GHC.Exts             (IsString)
 
-import Database.Redis.Redis
+import           Database.Redis.Redis
 
 -- | Type for a key in the key-value store
 --
 newtype Key = Key {unKey :: ByteString}
-            deriving (Show, Eq, Ord, IsString, Monoid, Binary)
+            deriving (Show, Eq, Ord, IsString, Semigroup, Monoid, Binary)
 
 -- | Gets an item from the database
 --
