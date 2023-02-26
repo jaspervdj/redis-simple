@@ -20,17 +20,16 @@ module Database.Redis.Simple
     , setRemove
     , setContains
     , setFindAll
+    , setRandMember
 
       -- * Working with lists
     , listRightPush
     , listIndex
     ) where
 
-import           Control.Applicative  ((<$>))
 import           Data.Binary          (Binary, decode, encode)
 import           Data.ByteString      (ByteString)
 import           Data.Maybe           (catMaybes)
-import           Data.Monoid          (Monoid)
 import           GHC.Exts             (IsString)
 
 import           Database.Redis.Redis
@@ -130,6 +129,19 @@ setFindAll redis (Key s) = do
                 RBulk i -> decode <$> i
                 _       -> Nothing
         _ -> return []
+
+
+-- | Get a random member from a set
+--
+setRandMember :: Binary a
+              => Redis         -- ^ Redis handle
+              -> Key           -- ^ Key of the set
+              -> IO (Maybe a)  -- ^ A random member from the set
+setRandMember redis (Key s) = do
+    reply <- srandmember redis s
+    return $ case reply of RBulk (Just r) -> Just $ decode r
+                           _              -> Nothing
+
 
 -- | Right push an item to a redis list
 --
